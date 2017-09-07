@@ -10,6 +10,7 @@ namespace Oefening2_circustrein
     {
         static void Main(string[] args)
         {
+
         }
     }
 }

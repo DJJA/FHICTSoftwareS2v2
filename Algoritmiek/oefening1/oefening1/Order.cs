@@ -65,13 +65,50 @@ namespace oefening1
 
         public void SortProductsByPrice()
         {
-            var productsSorted = new List<Product>();
-            while(mProducts.Count > 0)
+            //var productsSorted = new List<Product>();
+            //while (mProducts.Count > 0)
+            //{
+            //    productsSorted.Add(GiveMaximumPrice(mProducts));
+            //    mProducts.RemoveAt(mProducts.IndexOf(productsSorted[productsSorted.Count - 1]));
+            //}
+            //mProducts = productsSorted;
+            BubleSort2();
+        }
+
+        private void BubleSort()
+        {
+            bool swapped = true;
+            while (swapped)
             {
-                productsSorted.Add(GiveMaximumPrice(mProducts));
-                mProducts.RemoveAt(mProducts.IndexOf(productsSorted[productsSorted.Count - 1]));
+                swapped = false;
+                for (int i = 1; i < mProducts.Count; i++)
+                {
+                    if (mProducts[i].Price < mProducts[i - 1].Price)
+                    {
+                        SwapTwoListItems(mProducts, i, i - 1);
+                        swapped = true;
+                    }
+                }
             }
-            mProducts = productsSorted;
+        }
+
+        private void BubleSort2()
+        {
+            for (int i = 1; i < mProducts.Count; i++)
+            {
+                if (mProducts[i].Price < mProducts[i - 1].Price)
+                {
+                    SwapTwoListItems(mProducts, i, i - 1);
+                    i = 0;
+                }
+            }
+        }
+
+        private void SwapTwoListItems(List<Product> list, int index1, int index2)
+        {
+            var p = list[index1];
+            list[index1] = list[index2];
+            list[index2] = p;
         }
     }
 }
