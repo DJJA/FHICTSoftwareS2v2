@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "oefening1", "oefening1\oefening1.csproj", "{98B9A153-7557-4284-8B67-EE63BE5E35A4}"
 EndProject
@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sorting", "Sorting\Sorting.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SortingTests", "SortingTests\SortingTests.csproj", "{BD97DAD1-C1FB-4B01-9B98-DD7D35C45E67}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euler", "Euler\Euler.csproj", "{AA2B2F8F-BB2A-4719-8DB1-79AECF3B214A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Algorithms", "Algorithms\Algorithms.csproj", "{9BD27FDB-4B19-4868-B372-17F09D4F5309}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +35,10 @@ Global
 		{BD97DAD1-C1FB-4B01-9B98-DD7D35C45E67}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD97DAD1-C1FB-4B01-9B98-DD7D35C45E67}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD97DAD1-C1FB-4B01-9B98-DD7D35C45E67}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AA2B2F8F-BB2A-4719-8DB1-79AECF3B214A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AA2B2F8F-BB2A-4719-8DB1-79AECF3B214A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AA2B2F8F-BB2A-4719-8DB1-79AECF3B214A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AA2B2F8F-BB2A-4719-8DB1-79AECF3B214A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BD27FDB-4B19-4868-B372-17F09D4F5309}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BD27FDB-4B19-4868-B372-17F09D4F5309}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BD27FDB-4B19-4868-B372-17F09D4F5309}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BD27FDB-4B19-4868-B372-17F09D4F5309}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
