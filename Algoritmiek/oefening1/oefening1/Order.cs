@@ -65,17 +65,21 @@ namespace oefening1
 
         public void SortProductsByPrice()
         {
-            //var productsSorted = new List<Product>();
-            //while (mProducts.Count > 0)
-            //{
-            //    productsSorted.Add(GiveMaximumPrice(mProducts));
-            //    mProducts.RemoveAt(mProducts.IndexOf(productsSorted[productsSorted.Count - 1]));
-            //}
-            //mProducts = productsSorted;
-            BubleSort2();
+            Sorting();
         }
 
-        private void BubleSort()
+        private void Sorting()      // Max > Min / DESC
+        {
+            var productsSorted = new List<Product>();
+            while (mProducts.Count > 0)
+            {
+                productsSorted.Add(GiveMaximumPrice(mProducts));
+                mProducts.RemoveAt(mProducts.IndexOf(productsSorted[productsSorted.Count - 1]));
+            }
+            mProducts = productsSorted;
+        }
+
+        private void BubleSort()    // ASC
         {
             bool swapped = true;
             while (swapped)
@@ -92,7 +96,7 @@ namespace oefening1
             }
         }
 
-        private void BubleSort2()
+        private void BubleSort2()   // ASC
         {
             for (int i = 1; i < mProducts.Count; i++)
             {
@@ -104,6 +108,36 @@ namespace oefening1
             }
         }
 
+        private void SelectionSort(double[] arr)    // ASC
+        {
+            for (int i = 0; i < arr.Length; i++)
+            {
+
+            }
+        }
+
+        private void InsertionSort(double[] arr)
+        {
+            int curInsertionPoint = 0;  // current insertion point
+            int iSmallest = -1;
+            while(curInsertionPoint < (arr.Length -1))
+            {
+                for (int i = curInsertionPoint; i < arr.Length; i++)
+                {
+                    if (iSmallest == -1)
+                        iSmallest = i;
+                    else if (arr[iSmallest] > arr[i])
+                        iSmallest = i;
+                }
+
+                double temp = arr[curInsertionPoint];
+                arr[curInsertionPoint] = arr[iSmallest];
+                arr[iSmallest] = temp;
+
+                curInsertionPoint++;
+            }
+        }
+
         private void SwapTwoListItems(List<Product> list, int index1, int index2)
         {
             var p = list[index1];
@@ -112,3 +146,5 @@ namespace oefening1
         }
     }
 }
+
+
