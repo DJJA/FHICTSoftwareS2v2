@@ -10,6 +10,9 @@ namespace Algorithms
     {
         static void Main(string[] args)
         {
+            GraafAlgoritme.GetShortestRoute(GraafAlgoritme.graaf1, 'A', 'F');
+
+            Console.ReadLine();
         }
     }
 }

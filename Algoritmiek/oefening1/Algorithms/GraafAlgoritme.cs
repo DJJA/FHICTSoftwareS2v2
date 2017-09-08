@@ -8,7 +8,7 @@ namespace Algorithms
 {
     public class GraafAlgoritme
     {
-        Graaf graaf1 = new Graaf()
+        public static Graaf graaf1 = new Graaf()
         {
             new Route('A', 'B', 5),
             new Route('A', 'D', 6),
@@ -27,48 +27,6 @@ namespace Algorithms
 
         public static void GetShortestRoute(Graaf graaf, char pointStart, char pointDestination)
         {
-            Route twoNodeRoute = null;
-            // pointStart and pointDestination route exists?
-            foreach (var r in graaf)
-            {
-                if ((r.PointA == pointStart && r.PointB == pointDestination) || (r.PointA == pointDestination && r.PointB == pointStart))
-                    twoNodeRoute = r;
-            }
-
-            //var routes = GetRoutesConnectedToNodes(graaf, pointStart, pointDestination);
-
-            //var twoConnectionRoutes = new List<Route>();
-            //foreach (var r in routes)
-            //{
-
-            //}
-
-            var nodesConnectedToA = new List<char>();
-            foreach (var route in graaf)
-            {
-                if (route.PointA == pointStart)
-                    nodesConnectedToA.Add(route.PointB);
-                else if (route.PointB == pointStart)
-                    nodesConnectedToA.Add(route.PointA);
-            }
-            var nodesConnectedToB = new List<char>();
-            foreach (var route in graaf)
-            {
-                if (route.PointA == pointDestination)
-                    nodesConnectedToB.Add(route.PointB);
-                else if (route.PointB == pointDestination)
-                    nodesConnectedToB.Add(route.PointA);
-            }
-
-
-            var threeNodeRoutes = new List<Route>();
-            // Welke nodes zitten aan A en F
-            // Welke nodes komen overeen
-
-            var fourNodeRoutes = new List<Route>();
-
-
-
             // alle routes
             // welke nodes zitten aan A?
             // welke nodes zitten aan A1 en hebben we nog niet gehad?
@@ -77,17 +35,17 @@ namespace Algorithms
 
             // Vervolgens sorteren
 
-            var routes = new List<List<char>>();
-            var passedThrough = new List<char>();
+            //var routes = new List<List<char>>();
+            var startNode = new Node(pointStart);
+            var stopNode = new Node(pointDestination);
+            var passedThrough = new List<Node>()
+            {
+                startNode
+            };
 
-            var conNodes = GetConnectedNodes(graaf, pointStart, passedThrough);
-            //foreach (var conNode in conNodes)
-            //{
-            //    //var tempPassedThrough = new List<char>();
-            //    //tempPassedThrough.AddRange(passedThrough);
-            //    //tempPassedThrough.Add(conNode);
-            //    var conNodes2 = GetConnectedNodes(graaf, conNode, )
-            //}
+            startNode.ConnectedNodes = GetConnectedNodes(graaf, startNode, stopNode, passedThrough);
+
+
         }
 
         private static List<Node> GetConnectedNodes(Graaf graaf, Node nodeStart, Node nodeStop, List<Node> nodesPassedThrough)
@@ -97,64 +55,67 @@ namespace Algorithms
             foreach (var route in graaf)
             {
                 // Check if route has nodeStart in it
-                if (route.PointA == nodeStart.Id)
+                if (route.PointA.Id == nodeStart.Id)
                 {
                     if (!IsNodeInList(nodesPassedThrough, route.PointB))
                     {
-                        connectedNodes.Add(new Node(route.PointB));
+                        connectedNodes.Add(route.PointB);
                     }
                 }
-                else if (route.PointB == nodeStart.Id)
+                else if (route.PointB.Id == nodeStart.Id)
                 {
                     if (!IsNodeInList(nodesPassedThrough, route.PointA))
                     {
-                        connectedNodes.Add(new Node(route.PointA));
+                        connectedNodes.Add(route.PointA);
                     }
                 }
             }
 
             foreach (var item in connectedNodes)
             {
-                var temp = new List<char>();
-                temp.AddRange(nodesPassedThrough);
-                temp.Add(item);
+                if(item.Id != nodeStop.Id)
+                {
+                    var temp = new List<Node>();
+                    temp.AddRange(nodesPassedThrough);
+                    temp.Add(item);
 
-                var nodes = GetConnectedNodes(graaf, item, temp);
+                    item.ConnectedNodes = GetConnectedNodes(graaf, item, nodeStop, temp);
+                }
             }
 
             return connectedNodes;
         }
 
-        private static bool IsNodeInList(List<Node> nodes, char node)
+        private static bool IsNodeInList(List<Node> nodes, Node node)
         {
             foreach (var n in nodes)
             {
-                if (n.Id == node) return true;
+                if (n.Id == node.Id) return true;
             }
             return false;
         }
 
-        public static List<Route> GetRoutes(Graaf graaf, char pointA, char pointB, int connections)
-        {
-            var list = new List<Route>();
+        //public static List<Route> GetRoutes(Graaf graaf, char pointA, char pointB, int connections)
+        //{
+        //    var list = new List<Route>();
 
 
 
-            return list;
-        }
+        //    return list;
+        //}
 
-        private static List<Route> GetRoutesConnectedToNodes(Graaf graaf, char pointA, char pointB)
-        {
-            var list = new List<Route>();
+        //private static List<Route> GetRoutesConnectedToNodes(Graaf graaf, char pointA, char pointB)
+        //{
+        //    var list = new List<Route>();
 
-            foreach (var r in graaf)
-            {
-                if (r.PointA == pointA || r.PointA == pointB || r.PointB == pointA || r.PointB == pointB)
-                    list.Add(r);
-            }
+        //    foreach (var r in graaf)
+        //    {
+        //        if (r.PointA == pointA || r.PointA == pointB || r.PointB == pointA || r.PointB == pointB)
+        //            list.Add(r);
+        //    }
 
-            return list;
-        }
+        //    return list;
+        //}
     }
 
     public class Graaf : List<Route>
@@ -164,15 +125,15 @@ namespace Algorithms
 
     public class Route
     {
-        public char PointA { get; set; }
-        public char PointB { get; set; }
+        public Node PointA { get; set; }
+        public Node PointB { get; set; }
         public int Distance { get; set; }
         public Direction Direction { get; set; }
 
         public Route(char pointA, char pointB, int distance)
         {
-            PointA = pointA;
-            PointB = pointB;
+            PointA = new Node(pointA);
+            PointB = new Node(pointB);
             Distance = distance;
             Direction = Direction.Both;
         }
@@ -186,6 +147,16 @@ namespace Algorithms
         public Node(char id)
         {
             Id = id;
+        }
+        //public override bool Equals(object obj)
+        //{
+        //    if (((Node)obj).Id == Id)
+        //        return true;
+        //    return false;
+        //}
+        public override string ToString()
+        {
+            return $"[{Id}]";
         }
     }
 
