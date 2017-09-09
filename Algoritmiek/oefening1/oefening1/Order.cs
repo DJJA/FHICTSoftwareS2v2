@@ -65,18 +65,7 @@ namespace oefening1
 
         public void SortProductsByPrice()
         {
-            Sorting();
-        }
-
-        private void Sorting()      // Max > Min / DESC
-        {
-            var productsSorted = new List<Product>();
-            while (mProducts.Count > 0)
-            {
-                productsSorted.Add(GiveMaximumPrice(mProducts));
-                mProducts.RemoveAt(mProducts.IndexOf(productsSorted[productsSorted.Count - 1]));
-            }
-            mProducts = productsSorted;
+            BubleSort();
         }
 
         private void BubleSort()    // ASC

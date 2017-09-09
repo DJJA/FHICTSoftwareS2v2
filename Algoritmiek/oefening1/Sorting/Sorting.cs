@@ -8,7 +8,7 @@ namespace Sorting
 {
     public class Sorting
     {
-        public static void InsertionSort(int[] arr)
+        public static void InsertionSort(int[] arr) // ASC
         {
             int curInsertionPoint = 0;  // current insertion point
             int iSmallest = -1;
