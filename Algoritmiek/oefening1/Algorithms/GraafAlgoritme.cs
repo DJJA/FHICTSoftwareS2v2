@@ -130,8 +130,23 @@ namespace Algorithms
 
         public static Route GetShortestRoute(List<Route> routes)
         {
-            BubleSortRoutes(routes);
-            return routes[0];
+            //BubleSortRoutes(routes);
+            Route shortest = null;
+            foreach (var route in routes)
+            {
+                if (shortest == null)
+                {
+                    shortest = route;
+                }
+                else
+                {
+                    if (route.Distance < shortest.Distance)
+                    {
+                        shortest = route;
+                    }
+                }
+            }
+            return shortest;
         }
 
         public static List<Route> Get10ShortestRoutes(List<Route> routes)
@@ -237,16 +252,16 @@ namespace Algorithms
                 }
             }
 
-            foreach (var item in connectedNodes)
+            foreach (var node in connectedNodes)
             {
-                if (item.Id != nodeStop.Id)
+                if (node.Id != nodeStop.Id)
                 {
-                    var temp = new List<Node>();
-                    temp.AddRange(nodesPassedThrough);
-                    temp.Add(item);
+                    var curNodesPassedThrough = new List<Node>();
+                    curNodesPassedThrough.AddRange(nodesPassedThrough);
+                    curNodesPassedThrough.Add(node);
 
-                    item.IgnoredNodes = temp;
-                    item.ConnectedNodes = GetConnectedNodes(graaf, item, nodeStop, temp);
+                    node.IgnoredNodes = curNodesPassedThrough;
+                    node.ConnectedNodes = GetConnectedNodes(graaf, node, nodeStop, curNodesPassedThrough);
                 }
             }
 
@@ -383,7 +398,8 @@ namespace Algorithms
             Direction = Direction.Both;
         }
 
-        public Link(char pointA, char pointB, int distance, Direction direction) : this(pointA, pointB, distance)
+        public Link(char pointA, char pointB, int distance, Direction direction) 
+            : this(pointA, pointB, distance)
         {
             Direction = direction;
         }
