@@ -91,29 +91,51 @@ namespace Algorithms
         };
 
 
+        public static List<Route> GetPossibleRoutes(Graaf graaf, char pointStart, char pointDestination, int maxNodesPerRoute)
+        {
+            return FilterRoutesByNodeCount(GetPossibleRoutes(graaf, pointStart, pointDestination), maxNodesPerRoute);
+        }
+
+        public static List<Route> GetPossibleRoutes(Graaf graaf, char pointStart, char pointDestination, List<Node> nodesToAvoid, int maxNodesPerRoute)
+        {
+            return FilterRoutesByNodeCount(GetPossibleRoutes(graaf, pointStart, pointDestination, nodesToAvoid), maxNodesPerRoute);
+        }
+
         public static List<Route> GetPossibleRoutes(Graaf graaf, char pointStart, char pointDestination)
         {
-            // alle routes
-            // welke nodes zitten aan A?
-            // welke nodes zitten aan A1 en hebben we nog niet gehad?
-            // welke nodes zitten aan A2 en hebben we nog niet gehad?
-            // ... ect
-
             var startNode = new Node(pointStart);
             var stopNode = new Node(pointDestination);
-            var passedThrough = new List<Node>()
+            var nodesPassedThrough = new List<Node>()
             {
                 startNode
             };
+            return GetPossibleRoutes(graaf, startNode, stopNode, nodesPassedThrough);
+        }
 
-            startNode.ConnectedNodes = GetConnectedNodes(graaf, startNode, stopNode, passedThrough);
+        public static List<Route> GetPossibleRoutes(Graaf graaf, char pointStart, char pointDestination, List<Node> nodesToAvoid)
+        {
+            var startNode = new Node(pointStart);
+            var stopNode = new Node(pointDestination);
+            nodesToAvoid.Add(startNode);
+            return GetPossibleRoutes(graaf, startNode, stopNode, nodesToAvoid);
+        }
 
-            //var paths = GetConnectedNodesPathsAsString(startNode);
-            //Console.WriteLine("Possible Paths:");
-            //foreach (var path in paths)
-            //{
-            //    Console.WriteLine(path);
-            //}
+        private static List<Route> FilterRoutesByNodeCount(List<Route> routes, int maxNodeCount)
+        {
+            var filteredRoutes = new List<Route>();
+            foreach (var route in routes)
+            {
+                if (route.Links.Count <= (maxNodeCount - 1))
+                {
+                    filteredRoutes.Add(route);
+                }
+            }
+            return filteredRoutes;
+        }
+
+        private static List<Route> GetPossibleRoutes(Graaf graaf, Node startNode, Node stopNode, List<Node> nodesPassedThrough)
+        {
+            startNode.ConnectedNodes = GetConnectedNodes(graaf, startNode, stopNode, nodesPassedThrough);
 
             var routes = GetConnectedNodeRoutes(startNode, graaf);
 
@@ -121,7 +143,7 @@ namespace Algorithms
             foreach (var route in routes)
             {
                 var lastLink = route.Links[route.Links.Count - 1];
-                if (lastLink.PointA.Id == pointDestination || lastLink.PointB.Id == pointDestination)
+                if (lastLink.PointA.Id == stopNode.Id || lastLink.PointB.Id == stopNode.Id)
                     routesWithEnding.Add(route);
             }
 
@@ -153,13 +175,13 @@ namespace Algorithms
         {
             BubleSortRoutes(routes);
 
-            var temp = new List<Route>();
+            var shortestRoutes = new List<Route>();
             for (int i = 0; i < (routes.Count >= 10 ? 10 : routes.Count); i++)
             {
-                temp.Add(routes[i]);
+                shortestRoutes.Add(routes[i]);
             }
 
-            return temp;
+            return shortestRoutes;
         }
 
         private static List<string> GetConnectedNodesPathsAsString(Node node)
@@ -186,7 +208,7 @@ namespace Algorithms
 
         private static List<Route> GetConnectedNodeRoutes(Node node, Graaf graaf)
         {
-            var list = new List<Route>();
+            var possibleRoutes = new List<Route>();
 
             if (node.ConnectedNodes != null && node.ConnectedNodes.Count > 0)
             {
@@ -195,29 +217,27 @@ namespace Algorithms
                     // We have a link --> add it to the route
                     // Check if this node has more links
                     var curLink = graaf.GetLink(node.Id, conNode.Id);
-                    //var temp = new Route();
-                    //temp.AddLink(curLink);
 
                     var subRoutes = GetConnectedNodeRoutes(conNode, graaf);
                     if (subRoutes.Count > 0)
                     {
                         foreach (var subRoute in subRoutes)
                         {
-                            var temp = new Route();
-                            temp.AddLink(curLink);
+                            var route = new Route();
+                            route.AddLink(curLink);
                             foreach (var link in subRoute.Links)
                             {
-                                temp.AddLink(link);
+                                route.AddLink(link);
                             }
-                            list.Add(temp);
+                            possibleRoutes.Add(route);
                         }
                     }
                     else
                     {
                         // No more subroutes, only add the current link
-                        var temp = new Route();                             // Should perhaps use a List<Link> in stead of Route to save memory
-                        temp.AddLink(curLink);
-                        list.Add(temp);
+                        var route = new Route();                             // Should perhaps use a List<Link> in stead of Route to save memory
+                        route.AddLink(curLink);
+                        possibleRoutes.Add(route);
                     }
                 }
             }
@@ -226,24 +246,24 @@ namespace Algorithms
                 // If there are no more connected nodes, there're no new links
             }
 
-            return list;
+            return possibleRoutes;
         }
 
-        private static List<Node> GetConnectedNodes(Graaf graaf, Node nodeStart, Node nodeStop, List<Node> nodesPassedThrough)
+        private static List<Node> GetConnectedNodes(Graaf graaf, Node startNode, Node stopNode, List<Node> nodesPassedThrough)
         {
             var connectedNodes = new List<Node>();
 
             foreach (var route in graaf)
             {
                 // Check if route has nodeStart in it
-                if (route.PointA.Id == nodeStart.Id && route.Direction != Direction.BToA)
+                if (route.PointA.Id == startNode.Id && route.Direction != Direction.BToA)
                 {
                     if (!IsNodeInList(nodesPassedThrough, route.PointB))
                     {
                         connectedNodes.Add(new Node(route.PointB.Id));  // Was a reference problem --> connectedNodes.Add(route.PointB); --> Takes point from graaf, does it again later and changes it what causes the bug
                     }
                 }
-                else if (route.PointB.Id == nodeStart.Id && route.Direction != Direction.AToB)
+                else if (route.PointB.Id == startNode.Id && route.Direction != Direction.AToB)
                 {
                     if (!IsNodeInList(nodesPassedThrough, route.PointA))
                     {
@@ -254,14 +274,14 @@ namespace Algorithms
 
             foreach (var node in connectedNodes)
             {
-                if (node.Id != nodeStop.Id)
+                if (node.Id != stopNode.Id)
                 {
                     var curNodesPassedThrough = new List<Node>();
                     curNodesPassedThrough.AddRange(nodesPassedThrough);
                     curNodesPassedThrough.Add(node);
 
-                    node.IgnoredNodes = curNodesPassedThrough;
-                    node.ConnectedNodes = GetConnectedNodes(graaf, node, nodeStop, curNodesPassedThrough);
+                    //node.IgnoredNodes = curNodesPassedThrough;
+                    node.ConnectedNodes = GetConnectedNodes(graaf, node, stopNode, curNodesPassedThrough);
                 }
             }
 
@@ -288,9 +308,9 @@ namespace Algorithms
                 {
                     if (routes[i].Distance < routes[i - 1].Distance)
                     {
-                        var temp = routes[i];
+                        var route = routes[i];
                         routes[i] = routes[i - 1];
-                        routes[i - 1] = temp;
+                        routes[i - 1] = route;
                         swapped = true;
                     }
                 }
@@ -416,7 +436,7 @@ namespace Algorithms
     {
         public char Id { get; set; }
         public List<Node> ConnectedNodes { get; set; }
-        public List<Node> IgnoredNodes { get; set; }
+        //public List<Node> IgnoredNodes { get; set; }
 
         public Node(char id)
         {
